@@ -24,7 +24,7 @@
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             width: 100%;
             background-color: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
@@ -71,6 +71,168 @@
             font-size: 1.8rem;
             font-weight: bold;
             color: #2575fc;
+        }
+        
+        .custom-words-section {
+            background-color: #f0f7ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .custom-words-section h3 {
+            color: #2575fc;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .toggle-custom {
+            background: #6a11cb;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .bulk-input-container {
+            margin-bottom: 15px;
+        }
+        
+        .bulk-input-container h4 {
+            color: #6a11cb;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        #bulkInput {
+            width: 100%;
+            height: 180px;
+            padding: 12px;
+            border: 2px solid #c2e9fb;
+            border-radius: 10px;
+            font-size: 1rem;
+            line-height: 1.5;
+            resize: vertical;
+            margin-bottom: 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        #bulkInput:focus {
+            outline: none;
+            border-color: #2575fc;
+        }
+        
+        .bulk-input-example {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #6a11cb;
+        }
+        
+        .bulk-input-example strong {
+            color: #2575fc;
+        }
+        
+        .custom-words-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .custom-words-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        #parseBulkBtn {
+            background: linear-gradient(90deg, #56ab2f 0%, #a8e063 100%);
+            color: white;
+        }
+        
+        #loadExampleBtn {
+            background: linear-gradient(90deg, #9c27b0 0%, #673ab7 100%);
+            color: white;
+        }
+        
+        #useCustomWordsBtn {
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+        }
+        
+        #clearInputBtn {
+            background: linear-gradient(90deg, #ff9a00 0%, #ffd000 100%);
+            color: white;
+        }
+        
+        .word-count {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .word-count span {
+            font-weight: bold;
+            color: #2575fc;
+        }
+        
+        .pair-list-container {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding-right: 10px;
+        }
+        
+        .pair-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .pair-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #2575fc;
+        }
+        
+        .pair-item:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .pair-text {
+            flex: 1;
+        }
+        
+        .pair-english {
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .pair-chinese {
+            color: #c32f2f;
+        }
+        
+        .pair-separator {
+            margin: 0 10px;
+            color: #666;
         }
         
         .game-container {
@@ -255,6 +417,14 @@
             h1 {
                 font-size: 2.2rem;
             }
+            
+            .custom-words-buttons {
+                flex-direction: column;
+            }
+            
+            .custom-words-buttons button {
+                width: 100%;
+            }
         }
         
         @media (max-width: 480px) {
@@ -285,6 +455,73 @@
     <div class="container">
         <h1>单词消消乐 <span class="round-indicator" id="roundIndicator">第1轮</span></h1>
         <div class="subtitle">点击中文/Emoji，再点击对应的英文单词，匹配成功即可消除！</div>
+        
+        <!-- 自定义单词输入区域 -->
+        <div class="custom-words-section">
+            <h3>
+                批量输入单词
+                <button class="toggle-custom" id="toggleCustomBtn">展开/收起</button>
+            </h3>
+            <div class="custom-words-container" id="customWordsContainer" style="display: block;">
+                <div class="bulk-input-container">
+                    <h4>批量输入单词对</h4>
+                    <div class="bulk-input-example">
+                        <strong>输入格式：</strong>每行一个单词对，使用冒号(:)、中文冒号(：)、破折号(-)或空格分隔<br>
+                        <strong>示例：</strong><br>
+                        happy：开心的<br>
+                        sad：伤心的<br>
+                        angry：生气的
+                    </div>
+                    <textarea id="bulkInput" placeholder="请输入单词对，每行一个，例如：
+happy：开心的
+sad：伤心的
+angry：生气的
+boy：男孩
+girl：女孩
+...">happy：开心的
+sad：伤心的
+angry：生气的
+tired：疲倦的
+boy：男孩
+girl：女孩
+I：我
+am：是
+cold：冷的
+OK：对；好；行
+find：找到
+pencil：铅笔
+too：也；太
+well：好；就这样；好啦
+now：现在
+brother：哥哥；弟
+me：我
+family：家庭
+my：我的
+name：名字
+is：是
+this：这；这个
+and：和
+she：她
+he：他
+who：谁
+big：大的</textarea>
+                    <div class="word-count">已解析单词数: <span id="parsedCount">0</span></div>
+                    <div class="custom-words-buttons">
+                        <button id="parseBulkBtn">解析单词</button>
+                        <button id="loadExampleBtn">加载示例</button>
+                        <button id="useCustomWordsBtn">使用自定义单词开始游戏</button>
+                        <button id="clearInputBtn">清空输入</button>
+                    </div>
+                </div>
+                
+                <div class="pair-list-container" id="pairListContainer" style="display: none;">
+                    <h4>已解析的单词对：</h4>
+                    <ul class="pair-list" id="pairList">
+                        <!-- 单词对将在这里动态添加 -->
+                    </ul>
+                </div>
+            </div>
+        </div>
         
         <div class="game-info">
             <div class="info-item">
@@ -325,13 +562,14 @@
                 <li>每轮需要匹配18对单词，共3轮</li>
                 <li>匹配成功得10分，使用提示扣5分</li>
                 <li>每轮时间限制60秒，时间用完游戏结束</li>
+                <li><strong>新功能：</strong>您可以在上方"批量输入单词"区域一次性输入多个中英文单词对进行游戏</li>
             </ul>
         </div>
     </div>
 
     <script>
-        // 单词数据
-        const wordPairs = [
+        // 默认单词数据
+        const defaultWordPairs = [
             { chinese: "苹果", english: "apple", emoji: "🍎" },
             { chinese: "猫", english: "cat", emoji: "🐱" },
             { chinese: "狗", english: "dog", emoji: "🐶" },
@@ -349,24 +587,7 @@
             { chinese: "心", english: "heart", emoji: "❤️" },
             { chinese: "电脑", english: "computer", emoji: "💻" },
             { chinese: "电话", english: "phone", emoji: "📱" },
-            { chinese: "时间", english: "time", emoji: "⏰" },
-            { chinese: "钱", english: "money", emoji: "💰" },
-            { chinese: "音乐", english: "music", emoji: "🎵" },
-            { chinese: "食物", english: "food", emoji: "🍕" },
-            { chinese: "衣服", english: "clothes", emoji: "👕" },
-            { chinese: "鞋子", english: "shoes", emoji: "👟" },
-            { chinese: "天气", english: "weather", emoji: "🌦️" },
-            { chinese: "朋友", english: "friend", emoji: "👫" },
-            { chinese: "家人", english: "family", emoji: "👨‍👩‍👧‍👦" },
-            { chinese: "学校", english: "school", emoji: "🏫" },
-            { chinese: "工作", english: "work", emoji: "💼" },
-            { chinese: "旅行", english: "travel", emoji: "✈️" },
-            { chinese: "健康", english: "health", emoji: "💪" },
-            { chinese: "快乐", english: "happy", emoji: "😊" },
-            { chinese: "悲伤", english: "sad", emoji: "😢" },
-            { chinese: "爱", english: "love", emoji: "💖" },
-            { chinese: "梦想", english: "dream", emoji: "🌠" },
-            { chinese: "成功", english: "success", emoji: "🏆" }
+            { chinese: "时间", english: "time", emoji: "⏰" }
         ];
 
         // 游戏状态变量
@@ -381,7 +602,9 @@
             timer: 60,
             timerInterval: null,
             usedPairs: [],
-            speechSupported: 'speechSynthesis' in window
+            speechSupported: 'speechSynthesis' in window,
+            usingCustomWords: false,
+            customWordPairs: []
         };
 
         // DOM元素
@@ -395,6 +618,18 @@
         const hintBtn = document.getElementById('hintBtn');
         const resetBtn = document.getElementById('resetBtn');
         const messageElement = document.getElementById('message');
+        const parsedCountElement = document.getElementById('parsedCount');
+        
+        // 自定义单词相关元素
+        const customWordsContainer = document.getElementById('customWordsContainer');
+        const toggleCustomBtn = document.getElementById('toggleCustomBtn');
+        const bulkInput = document.getElementById('bulkInput');
+        const parseBulkBtn = document.getElementById('parseBulkBtn');
+        const loadExampleBtn = document.getElementById('loadExampleBtn');
+        const useCustomWordsBtn = document.getElementById('useCustomWordsBtn');
+        const clearInputBtn = document.getElementById('clearInputBtn');
+        const pairList = document.getElementById('pairList');
+        const pairListContainer = document.getElementById('pairListContainer');
 
         // 音频元素
         const correctSound = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=");
@@ -457,9 +692,249 @@
             }
         }
 
+        // 解析批量输入的单词
+        function parseBulkInput() {
+            const text = bulkInput.value.trim();
+            if (!text) {
+                showMessage('请输入单词内容', 'error');
+                return [];
+            }
+            
+            const lines = text.split('\n');
+            const pairs = [];
+            
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) continue;
+                
+                // 尝试用不同分隔符解析
+                let english, chinese;
+                
+                // 尝试中文冒号
+                if (line.includes('：')) {
+                    const parts = line.split('：');
+                    english = parts[0].trim();
+                    chinese = parts.slice(1).join('：').trim(); // 处理中文中可能包含的冒号
+                }
+                // 尝试英文冒号
+                else if (line.includes(':')) {
+                    const parts = line.split(':');
+                    english = parts[0].trim();
+                    chinese = parts.slice(1).join(':').trim(); // 处理英文中可能包含的冒号
+                }
+                // 尝试破折号
+                else if (line.includes('-')) {
+                    const parts = line.split('-');
+                    english = parts[0].trim();
+                    chinese = parts.slice(1).join('-').trim(); // 处理单词中可能包含的破折号
+                }
+                // 尝试空格（最后一个空格）
+                else {
+                    const lastSpaceIndex = line.lastIndexOf(' ');
+                    if (lastSpaceIndex > 0) {
+                        english = line.substring(0, lastSpaceIndex).trim();
+                        chinese = line.substring(lastSpaceIndex + 1).trim();
+                    } else {
+                        // 无法解析，跳过这一行
+                        continue;
+                    }
+                }
+                
+                if (english && chinese) {
+                    // 为单词生成一个相关的emoji
+                    const emoji = getRelatedEmoji(english.toLowerCase(), chinese);
+                    
+                    pairs.push({
+                        english: english.trim(),
+                        chinese: chinese.trim(),
+                        emoji
+                    });
+                }
+            }
+            
+            return pairs;
+        }
+
+        // 根据单词获取相关的emoji
+        function getRelatedEmoji(english, chinese) {
+            const emojiMap = {
+                // 情感相关
+                'happy': '😊', '开心': '😊', '高兴': '😊',
+                'sad': '😢', '伤心': '😢', '悲伤': '😢',
+                'angry': '😠', '生气': '😠',
+                'tired': '😫', '疲倦': '😫', '累': '😫',
+                
+                // 人物相关
+                'boy': '👦', '男孩': '👦',
+                'girl': '👧', '女孩': '👧',
+                'man': '👨', '男人': '👨',
+                'woman': '👩', '女人': '👩',
+                'brother': '👦', '哥哥': '👦', '弟': '👦',
+                'sister': '👧', '姐姐': '👧', '妹': '👧',
+                'family': '👨‍👩‍👧‍👦', '家庭': '👨‍👩‍👧‍👦',
+                
+                // 人称代词
+                'i': '🙋', '我': '🙋',
+                'me': '🙋', '我': '🙋',
+                'you': '👉', '你': '👉',
+                'he': '👨', '他': '👨',
+                'she': '👩', '她': '👩',
+                'we': '👥', '我们': '👥',
+                
+                // 物品相关
+                'pencil': '✏️', '铅笔': '✏️',
+                'pen': '🖊️', '笔': '🖊️',
+                'book': '📖', '书': '📖',
+                
+                // 天气和感觉
+                'cold': '🥶', '冷': '🥶',
+                'hot': '🥵', '热': '🥵',
+                
+                // 动作和状态
+                'find': '🔍', '找到': '🔍',
+                'look': '👀', '看': '👀',
+                'run': '🏃', '跑': '🏃',
+                
+                // 其他常用
+                'ok': '👌', '好': '👌', '行': '👌',
+                'yes': '✅', '是': '✅',
+                'no': '❌', '不': '❌',
+                'now': '⏰', '现在': '⏰',
+                'time': '⏰', '时间': '⏰',
+                'big': '🐘', '大': '🐘', '大的': '🐘',
+                'small': '🐭', '小': '🐭', '小的': '🐭',
+                'this': '👉', '这': '👉', '这个': '👉',
+                'that': '👉', '那': '👉', '那个': '👉',
+                'and': '➕', '和': '➕',
+                'is': '🔤', '是': '🔤',
+                'am': '🔤', '是': '🔤',
+                'are': '🔤', '是': '🔤',
+                'my': '👤', '我的': '👤',
+                'your': '👤', '你的': '👤',
+                'name': '📛', '名字': '📛',
+                'who': '❓', '谁': '❓',
+                'what': '❓', '什么': '❓',
+                'where': '📍', '哪里': '📍',
+                'well': '👍', '好': '👍',
+                'too': '➕', '也': '➕', '太': '➕'
+            };
+            
+            // 首先检查英文单词
+            if (emojiMap[english]) {
+                return emojiMap[english];
+            }
+            
+            // 然后检查中文
+            for (const [key, value] of Object.entries(emojiMap)) {
+                if (chinese.includes(key)) {
+                    return value;
+                }
+            }
+            
+            // 如果没有找到相关emoji，使用默认的
+            const defaultEmojis = ['📚', '🔤', '💬', '🗣️', '📝', '🎓', '🧠', '💡', '⭐', '✨'];
+            const index = Math.abs(english.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % defaultEmojis.length;
+            return defaultEmojis[index];
+        }
+
+        // 更新单词列表显示
+        function updatePairListDisplay(pairs) {
+            pairList.innerHTML = '';
+            parsedCountElement.textContent = pairs.length;
+            
+            pairs.forEach((pair, index) => {
+                const li = document.createElement('li');
+                li.className = 'pair-item';
+                
+                li.innerHTML = `
+                    <div class="pair-text">
+                        <span class="pair-english">${pair.english}</span>
+                        <span class="pair-separator">→</span>
+                        <span class="pair-chinese">${pair.chinese}</span>
+                    </div>
+                `;
+                
+                pairList.appendChild(li);
+            });
+            
+            // 显示或隐藏列表容器
+            if (pairs.length > 0) {
+                pairListContainer.style.display = 'block';
+            } else {
+                pairListContainer.style.display = 'none';
+            }
+        }
+
+        // 清空输入框
+        function clearInput() {
+            bulkInput.value = '';
+            gameState.customWordPairs = [];
+            updatePairListDisplay(gameState.customWordPairs);
+            showMessage('输入框已清空', 'info');
+        }
+
+        // 加载示例单词
+        function loadExampleWords() {
+            // 预定义的示例单词
+            const exampleWords = `happy：开心的
+sad：伤心的
+angry：生气的
+tired：疲倦的
+boy：男孩
+girl：女孩
+I：我
+am：是
+cold：冷的
+OK：对；好；行
+find：找到
+pencil：铅笔
+too：也；太
+well：好；就这样；好啦
+now：现在
+brother：哥哥；弟
+me：我
+family：家庭
+my：我的
+name：名字
+is：是
+this：这；这个
+and：和
+she：她
+he：他
+who：谁
+big：大的`;
+            
+            bulkInput.value = exampleWords;
+            
+            // 自动解析示例单词
+            const parsedPairs = parseBulkInput();
+            if (parsedPairs.length > 0) {
+                gameState.customWordPairs = parsedPairs;
+                updatePairListDisplay(gameState.customWordPairs);
+                showMessage(`已加载并解析 ${parsedPairs.length} 个示例单词`, 'success');
+            }
+        }
+
         // 开始游戏
-        function startGame() {
+        function startGame(useCustom = false) {
             if (gameState.gameActive) return;
+            
+            // 如果使用自定义单词，检查是否有足够的单词
+            if (useCustom) {
+                if (gameState.customWordPairs.length < 6) {
+                    showMessage('自定义单词至少需要6对，已补充默认单词', 'error');
+                    // 如果自定义单词不足，用默认单词补充
+                    const needed = Math.max(6, gameState.totalPairs - gameState.customWordPairs.length);
+                    const supplement = [...defaultWordPairs]
+                        .sort(() => Math.random() - 0.5)
+                        .slice(0, needed);
+                    gameState.customWordPairs = [...gameState.customWordPairs, ...supplement].slice(0, gameState.totalPairs);
+                }
+                
+                if (gameState.customWordPairs.length < gameState.totalPairs) {
+                    showMessage(`自定义单词只有${gameState.customWordPairs.length}对，将随机选择其中${Math.min(gameState.customWordPairs.length, gameState.totalPairs)}对进行游戏`, 'info');
+                }
+            }
             
             gameState.gameActive = true;
             gameState.matchedPairs = 0;
@@ -476,31 +951,50 @@
             hintBtn.disabled = false;
             
             // 生成游戏板
-            generateGameBoard();
+            generateGameBoard(useCustom);
             
             // 开始计时器
             startTimer();
             
-            showMessage(`第${gameState.currentRound}轮开始！匹配所有单词！`, 'success');
+            const message = useCustom ? 
+                `第${gameState.currentRound}轮开始！使用自定义单词进行游戏！` : 
+                `第${gameState.currentRound}轮开始！匹配所有单词！`;
+            
+            showMessage(message, 'success');
         }
 
         // 生成游戏板
-        function generateGameBoard() {
+        function generateGameBoard(useCustom = false) {
             // 清空游戏容器
             gameContainer.innerHTML = '';
-            
-            // 为当前轮次随机选择单词对
             gameState.usedPairs = [];
-            const shuffledPairs = [...wordPairs].sort(() => Math.random() - 0.5);
-            const selectedPairs = shuffledPairs.slice(0, gameState.totalPairs);
+            
+            let wordPairsToUse;
+            
+            if (useCustom) {
+                // 使用自定义单词
+                wordPairsToUse = [...gameState.customWordPairs];
+                gameState.usingCustomWords = true;
+                
+                // 随机选择最多18对单词
+                wordPairsToUse = wordPairsToUse
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, Math.min(gameState.totalPairs, wordPairsToUse.length));
+            } else {
+                // 使用默认单词
+                wordPairsToUse = [...defaultWordPairs]
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, gameState.totalPairs);
+                gameState.usingCustomWords = false;
+            }
             
             // 创建中文和英文方块
             const tiles = [];
             
-            selectedPairs.forEach(pair => {
-                // 随机决定显示中文还是emoji（70%显示emoji，30%显示中文）
-                const showEmoji = Math.random() < 0.7;
-                const chineseDisplay = showEmoji ? pair.emoji : pair.chinese;
+            wordPairsToUse.forEach(pair => {
+                // 随机决定显示中文还是emoji（50%显示emoji，50%显示中文）
+                const showEmoji = Math.random() < 0.5;
+                const chineseDisplay = showEmoji && pair.emoji ? pair.emoji : pair.chinese;
                 
                 // 中文/emoji方块
                 tiles.push({
@@ -535,7 +1029,7 @@
                 
                 // 设置显示内容
                 if (tile.type === 'chinese' && tile.content.length <= 2) {
-                    // 如果是emoji或短中文，直接显示
+                    // 如果是emoji，直接显示
                     tileElement.innerHTML = `<span class="emoji">${tile.content}</span>`;
                 } else {
                     tileElement.textContent = tile.content;
@@ -698,7 +1192,7 @@
                     
                     // 短暂延迟后开始下一轮
                     setTimeout(() => {
-                        startGame();
+                        startGame(gameState.usingCustomWords);
                     }, 1500);
                 } else {
                     // 完成所有轮次
@@ -767,7 +1261,9 @@
                 timer: 60,
                 timerInterval: null,
                 usedPairs: [],
-                speechSupported: 'speechSynthesis' in window
+                speechSupported: 'speechSynthesis' in window,
+                usingCustomWords: gameState.usingCustomWords, // 保留使用自定义单词的状态
+                customWordPairs: [...gameState.customWordPairs] // 保留自定义单词
             };
             
             // 重置显示
@@ -798,14 +1294,39 @@
             initAudio();
             updateGameInfo();
             
+            // 初始化自定义单词（自动解析输入框中的内容）
+            const initialPairs = parseBulkInput();
+            gameState.customWordPairs = initialPairs;
+            updatePairListDisplay(gameState.customWordPairs);
+            
             // 添加按钮事件监听
-            startBtn.addEventListener('click', startGame);
+            startBtn.addEventListener('click', () => startGame(false));
+            useCustomWordsBtn.addEventListener('click', () => startGame(true));
             hintBtn.addEventListener('click', showHint);
             resetBtn.addEventListener('click', resetGame);
             
+            // 自定义单词相关事件
+            toggleCustomBtn.addEventListener('click', () => {
+                const isHidden = customWordsContainer.style.display === 'none';
+                customWordsContainer.style.display = isHidden ? 'block' : 'none';
+            });
+            
+            parseBulkBtn.addEventListener('click', () => {
+                const parsedPairs = parseBulkInput();
+                if (parsedPairs.length > 0) {
+                    gameState.customWordPairs = parsedPairs;
+                    updatePairListDisplay(gameState.customWordPairs);
+                    showMessage(`成功解析 ${parsedPairs.length} 个单词对`, 'success');
+                }
+            });
+            
+            loadExampleBtn.addEventListener('click', loadExampleWords);
+            clearInputBtn.addEventListener('click', clearInput);
+            
             // 初始禁用提示按钮
             hintBtn.disabled = true;
-            showMessage('点击"开始游戏"开始单词消消乐！', 'info');
+            
+            showMessage('欢迎来到单词消消乐！输入单词对后点击"解析单词"，然后点击"使用自定义单词开始游戏"', 'info');
         }
 
         // 页面加载完成后初始化游戏
