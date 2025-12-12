@@ -163,12 +163,7 @@
             color: white;
         }
         
-        #loadExampleBtn {
-            background: linear-gradient(90deg, #9c27b0 0%, #673ab7 100%);
-            color: white;
-        }
-        
-        #useCustomWordsBtn {
+        #startBtn {
             background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
             color: white;
         }
@@ -313,11 +308,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
-        #startBtn {
-            background: linear-gradient(90deg, #56ab2f 0%, #a8e063 100%);
-            color: white;
-        }
-        
         #resetBtn {
             background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%);
             color: white;
@@ -325,6 +315,11 @@
         
         #hintBtn {
             background: linear-gradient(90deg, #ff9a00 0%, #ffd000 100%);
+            color: white;
+        }
+        
+        #startGameBtn {
+            background: linear-gradient(90deg, #56ab2f 0%, #a8e063 100%);
             color: white;
         }
         
@@ -366,11 +361,6 @@
         
         .instructions li {
             margin-bottom: 8px;
-        }
-        
-        .emoji {
-            font-size: 1.5rem;
-            margin-right: 5px;
         }
         
         .message {
@@ -496,7 +486,7 @@
     
     <div class="container">
         <h1>单词消消乐 <span class="round-indicator" id="roundIndicator">第1轮</span></h1>
-        <div class="subtitle">点击中文/Emoji，再点击对应的英文单词，匹配成功即可消除！</div>
+        <div class="subtitle">点击中文，再点击对应的英文单词，匹配成功即可消除！</div>
         
         <!-- 自定义单词输入区域 -->
         <div class="custom-words-section">
@@ -548,8 +538,6 @@ big：大的</textarea>
                     <div class="word-count">已解析单词数: <span id="parsedCount">0</span></div>
                     <div class="custom-words-buttons">
                         <button id="parseBulkBtn">解析单词</button>
-                        <button id="loadExampleBtn">加载示例</button>
-                        <button id="useCustomWordsBtn">使用自定义单词开始游戏</button>
                         <button id="clearInputBtn">清空输入</button>
                     </div>
                 </div>
@@ -569,15 +557,15 @@ big：大的</textarea>
             <div class="config-group">
                 <div class="config-item">
                     <label for="columnsInput">每行列数:</label>
-                    <input type="number" id="columnsInput" min="3" max="8" value="6">
+                    <input type="number" id="columnsInput" min="3" max="10" value="6">
                 </div>
                 <div class="config-item">
                     <label for="timerInput">每轮时间(秒):</label>
-                    <input type="number" id="timerInput" min="30" max="300" value="60">
+                    <input type="number" id="timerInput" min="30" max="600" value="120">
                 </div>
                 <div class="config-item">
                     <label for="roundsInput">游戏轮数:</label>
-                    <input type="number" id="roundsInput" min="1" max="5" value="3">
+                    <input type="number" id="roundsInput" min="1" max="5" value="1">
                 </div>
             </div>
             <div class="word-count" id="tileCount">当前将生成 <span id="tileCountValue">0</span> 个方块</div>
@@ -598,7 +586,7 @@ big：大的</textarea>
             </div>
             <div class="info-item">
                 <div class="info-label">时间</div>
-                <div class="info-value" id="timer">60</div>
+                <div class="info-value" id="timer">120</div>
             </div>
         </div>
         
@@ -607,7 +595,7 @@ big：大的</textarea>
         </div>
         
         <div class="controls">
-            <button id="startBtn">开始游戏</button>
+            <button id="startGameBtn">开始游戏</button>
             <button id="hintBtn">提示</button>
             <button id="resetBtn">重新开始</button>
         </div>
@@ -615,58 +603,33 @@ big：大的</textarea>
         <div class="instructions">
             <h3>游戏规则：</h3>
             <ul>
-                <li>点击<span style="color:#c32f2f; font-weight:bold">橙色方块</span>（中文/Emoji），再点击<span style="color:#2c5aa0; font-weight:bold">蓝色方块</span>（英文单词）进行匹配</li>
-                <li>每次点击中文/Emoji方块时，系统会自动朗读中文</li>
+                <li>点击<span style="color:#c32f2f; font-weight:bold">橙色方块</span>（中文），再点击<span style="color:#2c5aa0; font-weight:bold">蓝色方块</span>（英文单词）进行匹配</li>
+                <li>每次点击中文方块时，系统会自动朗读中文</li>
                 <li>每次点击英文单词时，系统会自动朗读英文</li>
-                <li>匹配成功时播放"叮"声，匹配失败时播放"啊哦"声</li>
                 <li>游戏将根据您输入的单词数量动态生成方块</li>
                 <li>匹配成功得10分，使用提示扣5分</li>
                 <li>时间用完游戏结束</li>
-                <li><strong>新功能：</strong>您可以自定义每行列数、游戏轮数和时间限制</li>
+                <li>行数和列数会根据单词数量自动调整，您也可以手动设置</li>
             </ul>
         </div>
     </div>
 
     <script>
-        // 默认单词数据
-        const defaultWordPairs = [
-            { chinese: "苹果", english: "apple", emoji: "🍎" },
-            { chinese: "猫", english: "cat", emoji: "🐱" },
-            { chinese: "狗", english: "dog", emoji: "🐶" },
-            { chinese: "太阳", english: "sun", emoji: "☀️" },
-            { chinese: "月亮", english: "moon", emoji: "🌙" },
-            { chinese: "星星", english: "star", emoji: "⭐" },
-            { chinese: "水", english: "water", emoji: "💧" },
-            { chinese: "火", english: "fire", emoji: "🔥" },
-            { chinese: "树", english: "tree", emoji: "🌳" },
-            { chinese: "书", english: "book", emoji: "📖" },
-            { chinese: "笔", english: "pen", emoji: "✏️" },
-            { chinese: "车", english: "car", emoji: "🚗" },
-            { chinese: "房子", english: "house", emoji: "🏠" },
-            { chinese: "花", english: "flower", emoji: "🌸" },
-            { chinese: "心", english: "heart", emoji: "❤️" },
-            { chinese: "电脑", english: "computer", emoji: "💻" },
-            { chinese: "电话", english: "phone", emoji: "📱" },
-            { chinese: "时间", english: "time", emoji: "⏰" }
-        ];
-
         // 游戏状态变量
         let gameState = {
             currentRound: 1,
-            totalRounds: 3,
+            totalRounds: 1,
             score: 0,
             matchedPairs: 0,
             totalPairs: 0, // 动态计算
             selectedTile: null,
             gameActive: false,
-            timer: 60,
+            timer: 120,
             timerInterval: null,
             usedPairs: [],
             speechSupported: 'speechSynthesis' in window,
-            usingCustomWords: false,
             customWordPairs: [],
-            columns: 6,
-            maxPairsPerRound: 15 // 每轮最多单词对数量
+            columns: 6
         };
 
         // DOM元素
@@ -676,20 +639,18 @@ big：大的</textarea>
         const scoreElement = document.getElementById('score');
         const timerElement = document.getElementById('timer');
         const roundIndicator = document.getElementById('roundIndicator');
-        const startBtn = document.getElementById('startBtn');
         const hintBtn = document.getElementById('hintBtn');
         const resetBtn = document.getElementById('resetBtn');
         const messageElement = document.getElementById('message');
         const parsedCountElement = document.getElementById('parsedCount');
         const tileCountElement = document.getElementById('tileCountValue');
+        const startGameBtn = document.getElementById('startGameBtn');
         
         // 自定义单词相关元素
         const customWordsContainer = document.getElementById('customWordsContainer');
         const toggleCustomBtn = document.getElementById('toggleCustomBtn');
         const bulkInput = document.getElementById('bulkInput');
         const parseBulkBtn = document.getElementById('parseBulkBtn');
-        const loadExampleBtn = document.getElementById('loadExampleBtn');
-        const useCustomWordsBtn = document.getElementById('useCustomWordsBtn');
         const clearInputBtn = document.getElementById('clearInputBtn');
         const pairList = document.getElementById('pairList');
         const pairListContainer = document.getElementById('pairListContainer');
@@ -798,83 +759,14 @@ big：大的</textarea>
                 }
                 
                 if (english && chinese) {
-                    const emoji = getRelatedEmoji(english.toLowerCase(), chinese);
-                    
                     pairs.push({
                         english: english.trim(),
-                        chinese: chinese.trim(),
-                        emoji
+                        chinese: chinese.trim()
                     });
                 }
             }
             
             return pairs;
-        }
-
-        // 根据单词获取相关的emoji
-        function getRelatedEmoji(english, chinese) {
-            const emojiMap = {
-                'happy': '😊', '开心': '😊', '高兴': '😊',
-                'sad': '😢', '伤心': '😢', '悲伤': '😢',
-                'angry': '😠', '生气': '😠',
-                'tired': '😫', '疲倦': '😫', '累': '😫',
-                'boy': '👦', '男孩': '👦',
-                'girl': '👧', '女孩': '👧',
-                'man': '👨', '男人': '👨',
-                'woman': '👩', '女人': '👩',
-                'brother': '👦', '哥哥': '👦', '弟': '👦',
-                'sister': '👧', '姐姐': '👧', '妹': '👧',
-                'family': '👨‍👩‍👧‍👦', '家庭': '👨‍👩‍👧‍👦',
-                'i': '🙋', '我': '🙋',
-                'me': '🙋', '我': '🙋',
-                'you': '👉', '你': '👉',
-                'he': '👨', '他': '👨',
-                'she': '👩', '她': '👩',
-                'we': '👥', '我们': '👥',
-                'pencil': '✏️', '铅笔': '✏️',
-                'pen': '🖊️', '笔': '🖊️',
-                'book': '📖', '书': '📖',
-                'cold': '🥶', '冷': '🥶',
-                'hot': '🥵', '热': '🥵',
-                'find': '🔍', '找到': '🔍',
-                'look': '👀', '看': '👀',
-                'run': '🏃', '跑': '🏃',
-                'ok': '👌', '好': '👌', '行': '👌',
-                'yes': '✅', '是': '✅',
-                'no': '❌', '不': '❌',
-                'now': '⏰', '现在': '⏰',
-                'time': '⏰', '时间': '⏰',
-                'big': '🐘', '大': '🐘', '大的': '🐘',
-                'small': '🐭', '小': '🐭', '小的': '🐭',
-                'this': '👉', '这': '👉', '这个': '👉',
-                'that': '👉', '那': '👉', '那个': '👉',
-                'and': '➕', '和': '➕',
-                'is': '🔤', '是': '🔤',
-                'am': '🔤', '是': '🔤',
-                'are': '🔤', '是': '🔤',
-                'my': '👤', '我的': '👤',
-                'your': '👤', '你的': '👤',
-                'name': '📛', '名字': '📛',
-                'who': '❓', '谁': '❓',
-                'what': '❓', '什么': '❓',
-                'where': '📍', '哪里': '📍',
-                'well': '👍', '好': '👍',
-                'too': '➕', '也': '➕', '太': '➕'
-            };
-            
-            if (emojiMap[english]) {
-                return emojiMap[english];
-            }
-            
-            for (const [key, value] of Object.entries(emojiMap)) {
-                if (chinese.includes(key)) {
-                    return value;
-                }
-            }
-            
-            const defaultEmojis = ['📚', '🔤', '💬', '🗣️', '📝', '🎓', '🧠', '💡', '⭐', '✨'];
-            const index = Math.abs(english.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % defaultEmojis.length;
-            return defaultEmojis[index];
         }
 
         // 更新单词列表显示
@@ -912,11 +804,24 @@ big：大的</textarea>
             const tileCount = pairCount * 2; // 每对单词有2个方块
             tileCountElement.textContent = tileCount;
             
-            // 根据方块数量调整列数建议
-            const suggestedColumns = Math.min(8, Math.max(3, Math.ceil(Math.sqrt(tileCount / 2))));
-            if (!gameState.gameActive) {
-                columnsInput.value = suggestedColumns;
-                updateGameConfig();
+            // 根据方块数量自动调整列数
+            if (pairCount > 0) {
+                // 计算合适的列数：根据方块数量动态调整
+                let suggestedColumns;
+                if (pairCount <= 8) {
+                    suggestedColumns = Math.min(4, Math.max(2, Math.ceil(pairCount / 2)));
+                } else if (pairCount <= 15) {
+                    suggestedColumns = Math.min(6, Math.max(4, Math.ceil(pairCount / 3)));
+                } else if (pairCount <= 24) {
+                    suggestedColumns = Math.min(8, Math.max(5, Math.ceil(pairCount / 4)));
+                } else {
+                    suggestedColumns = Math.min(10, Math.max(6, Math.ceil(pairCount / 5)));
+                }
+                
+                if (!gameState.gameActive) {
+                    columnsInput.value = suggestedColumns;
+                    updateGameConfig();
+                }
             }
         }
 
@@ -928,51 +833,11 @@ big：大的</textarea>
             showMessage('输入框已清空', 'info');
         }
 
-        // 加载示例单词
-        function loadExampleWords() {
-            const exampleWords = `happy：开心的
-sad：伤心的
-angry：生气的
-tired：疲倦的
-boy：男孩
-girl：女孩
-I：我
-am：是
-cold：冷的
-OK：对；好；行
-find：找到
-pencil：铅笔
-too：也；太
-well：好；就这样；好啦
-now：现在
-brother：哥哥；弟
-me：我
-family：家庭
-my：我的
-name：名字
-is：是
-this：这；这个
-and：和
-she：她
-he：他
-who：谁
-big：大的`;
-            
-            bulkInput.value = exampleWords;
-            
-            const parsedPairs = parseBulkInput();
-            if (parsedPairs.length > 0) {
-                gameState.customWordPairs = parsedPairs;
-                updatePairListDisplay(gameState.customWordPairs);
-                showMessage(`已加载并解析 ${parsedPairs.length} 个示例单词`, 'success');
-            }
-        }
-
         // 更新游戏配置
         function updateGameConfig() {
             gameState.columns = parseInt(columnsInput.value) || 6;
-            gameState.timer = parseInt(timerInput.value) || 60;
-            gameState.totalRounds = parseInt(roundsInput.value) || 3;
+            gameState.timer = parseInt(timerInput.value) || 120;
+            gameState.totalRounds = parseInt(roundsInput.value) || 1;
             
             // 更新游戏容器样式
             gameContainer.style.gridTemplateColumns = `repeat(${gameState.columns}, 1fr)`;
@@ -987,7 +852,7 @@ big：大的`;
         }
 
         // 开始游戏
-        function startGame(useCustom = false) {
+        function startGame() {
             if (gameState.gameActive) return;
             
             // 更新游戏配置
@@ -995,33 +860,22 @@ big：大的`;
             
             let wordPairsToUse;
             
-            if (useCustom) {
-                if (gameState.customWordPairs.length < 3) {
-                    showMessage('至少需要3对单词才能开始游戏，已补充默认单词', 'error');
-                    const supplement = [...defaultWordPairs]
-                        .sort(() => Math.random() - 0.5)
-                        .slice(0, Math.max(3, 6 - gameState.customWordPairs.length));
-                    wordPairsToUse = [...gameState.customWordPairs, ...supplement];
-                } else {
-                    wordPairsToUse = [...gameState.customWordPairs];
-                }
-                gameState.usingCustomWords = true;
-            } else {
-                wordPairsToUse = [...defaultWordPairs];
-                gameState.usingCustomWords = false;
+            // 使用自定义单词
+            wordPairsToUse = [...gameState.customWordPairs];
+            
+            if (wordPairsToUse.length < 2) {
+                showMessage('至少需要2对单词才能开始游戏', 'error');
+                return;
             }
             
-            // 限制每轮最多单词对数量
-            const maxPairs = Math.min(wordPairsToUse.length, gameState.maxPairsPerRound);
-            wordPairsToUse = wordPairsToUse
-                .sort(() => Math.random() - 0.5)
-                .slice(0, maxPairs);
+            // 使用全部单词对
+            wordPairsToUse = wordPairsToUse.sort(() => Math.random() - 0.5);
             
             // 设置游戏状态
             gameState.gameActive = true;
             gameState.matchedPairs = 0;
             gameState.totalPairs = wordPairsToUse.length;
-            gameState.timer = parseInt(timerInput.value) || 60;
+            gameState.timer = parseInt(timerInput.value) || 120;
             gameState.selectedTile = null;
             gameState.usedPairs = wordPairsToUse;
             
@@ -1030,21 +884,17 @@ big：大的`;
             roundIndicator.textContent = `第${gameState.currentRound}轮`;
             timerElement.style.color = '#2575fc';
             
-            // 禁用开始按钮，启用其他按钮
-            startBtn.disabled = true;
+            // 启用提示按钮，禁用开始游戏按钮
             hintBtn.disabled = false;
+            startGameBtn.disabled = true;
             
-            // 生成游戏板
+            // 生成游戏板 - 使用全部单词对
             generateGameBoard(wordPairsToUse);
             
             // 开始计时器
             startTimer();
             
-            const message = useCustom ? 
-                `第${gameState.currentRound}轮开始！使用${gameState.totalPairs}对自定义单词！` : 
-                `第${gameState.currentRound}轮开始！匹配${gameState.totalPairs}对单词！`;
-            
-            showMessage(message, 'success');
+            showMessage(`第${gameState.currentRound}轮开始！匹配${gameState.totalPairs}对单词！`, 'success');
         }
 
         // 生成游戏板
@@ -1055,16 +905,15 @@ big：大的`;
             const tiles = [];
             
             wordPairs.forEach(pair => {
-                const showEmoji = Math.random() < 0.5;
-                const chineseDisplay = showEmoji && pair.emoji ? pair.emoji : pair.chinese;
-                
+                // 中文方块
                 tiles.push({
                     type: 'chinese',
-                    content: chineseDisplay,
+                    content: pair.chinese,
                     pairId: pair.english,
                     originalText: pair.chinese
                 });
                 
+                // 英文方块
                 tiles.push({
                     type: 'english',
                     content: pair.english,
@@ -1085,11 +934,7 @@ big：大的`;
                 tileElement.dataset.pairId = tile.pairId;
                 tileElement.dataset.originalText = tile.originalText;
                 
-                if (tile.type === 'chinese' && tile.content.length <= 2) {
-                    tileElement.innerHTML = `<span class="emoji">${tile.content}</span>`;
-                } else {
-                    tileElement.textContent = tile.content;
-                }
+                tileElement.textContent = tile.content;
                 
                 tileElement.addEventListener('click', () => handleTileClick(tileElement));
                 gameContainer.appendChild(tileElement);
@@ -1131,6 +976,7 @@ big：大的`;
                     matchTiles(gameState.selectedTile, tileElement);
                     playCorrectSound();
                     
+                    // 每次匹配成功只加10分，不移除奖励分
                     gameState.score += 10;
                     gameState.matchedPairs++;
                     
@@ -1210,10 +1056,8 @@ big：大的`;
         function completeRound() {
             clearInterval(gameState.timerInterval);
             
-            const timeBonus = Math.floor(gameState.timer / 2);
-            gameState.score += timeBonus;
-            
-            showMessage(`第${gameState.currentRound}轮完成！获得${timeBonus}时间奖励分。`, 'success');
+            // 移除时间奖励分，只保留匹配得分
+            showMessage(`第${gameState.currentRound}轮完成！`, 'success');
             
             setTimeout(() => {
                 if (gameState.currentRound < gameState.totalRounds) {
@@ -1224,7 +1068,7 @@ big：大的`;
                     showMessage(`准备第${gameState.currentRound}轮...`, 'success');
                     
                     setTimeout(() => {
-                        startGame(gameState.usingCustomWords);
+                        startGame();
                     }, 1500);
                 } else {
                     endGame(`恭喜！你完成了所有${gameState.totalRounds}轮游戏！最终得分: ${gameState.score}`);
@@ -1239,8 +1083,8 @@ big：大的`;
             
             showMessage(message, 'success');
             
-            startBtn.disabled = false;
             hintBtn.disabled = true;
+            startGameBtn.disabled = false;
         }
 
         // 提示功能
@@ -1276,20 +1120,18 @@ big：大的`;
             
             gameState = {
                 currentRound: 1,
-                totalRounds: parseInt(roundsInput.value) || 3,
+                totalRounds: parseInt(roundsInput.value) || 1,
                 score: 0,
                 matchedPairs: 0,
                 totalPairs: 0,
                 selectedTile: null,
                 gameActive: false,
-                timer: parseInt(timerInput.value) || 60,
+                timer: parseInt(timerInput.value) || 120,
                 timerInterval: null,
                 usedPairs: [],
                 speechSupported: 'speechSynthesis' in window,
-                usingCustomWords: gameState.usingCustomWords,
                 customWordPairs: [...gameState.customWordPairs],
-                columns: parseInt(columnsInput.value) || 6,
-                maxPairsPerRound: 15
+                columns: parseInt(columnsInput.value) || 6
             };
             
             updateGameInfo();
@@ -1299,8 +1141,8 @@ big：大的`;
             
             gameContainer.innerHTML = '';
             
-            startBtn.disabled = false;
             hintBtn.disabled = true;
+            startGameBtn.disabled = false;
             
             showMessage('游戏已重置，点击"开始游戏"开始新的游戏', 'info');
         }
@@ -1324,8 +1166,7 @@ big：大的`;
             updatePairListDisplay(gameState.customWordPairs);
             
             // 添加按钮事件监听
-            startBtn.addEventListener('click', () => startGame(false));
-            useCustomWordsBtn.addEventListener('click', () => startGame(true));
+            startGameBtn.addEventListener('click', startGame);
             hintBtn.addEventListener('click', showHint);
             resetBtn.addEventListener('click', resetGame);
             
@@ -1344,7 +1185,6 @@ big：大的`;
                 }
             });
             
-            loadExampleBtn.addEventListener('click', loadExampleWords);
             clearInputBtn.addEventListener('click', clearInput);
             
             // 配置输入事件监听
@@ -1355,7 +1195,7 @@ big：大的`;
             // 初始禁用提示按钮
             hintBtn.disabled = true;
             
-            showMessage('欢迎来到单词消消乐！输入单词对后点击"解析单词"，然后点击"使用自定义单词开始游戏"', 'info');
+            showMessage('欢迎来到单词消消乐！输入单词对后点击"解析单词"，然后点击"开始游戏"', 'info');
         }
 
         // 页面加载完成后初始化游戏
