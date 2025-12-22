@@ -485,7 +485,7 @@
     <div class="message" id="message"></div>
     
     <div class="container">
-        <h1>单词消消乐 <span class="round-indicator" id="roundIndicator">第1轮</span></h1>
+        <h1>单词消消乐<span class="round-indicator" id="roundIndicator">第1轮</span></h1>
         <div class="subtitle">点击中文，再点击对应的英文单词，匹配成功即可消除！</div>
         
         <!-- 自定义单词输入区域 -->
@@ -498,43 +498,43 @@
                 <div class="bulk-input-container">
                     <h4>批量输入单词对</h4>
                     <div class="bulk-input-example">
-                        <strong>输入格式：</strong>每行一个单词对，使用冒号(:)、中文冒号(：)、破折号(-)或空格分隔<br>
+                        <strong>输入格式：</strong>每行一个单词对，使用冒号(:)、中文冒号(：)、连字符(-)或空格分隔<br>
                         <strong>示例：</strong><br>
-                        happy：开心的<br>
-                        sad：伤心的<br>
-                        angry：生气的
+                        happy:开心的<br>
+                        sad:伤心的<br>
+                        angry:生气的
                     </div>
                     <textarea id="bulkInput" placeholder="请输入单词对，每行一个，例如：
-happy：开心的
-sad：伤心的
-angry：生气的
-...">happy：开心的
-sad：伤心的
-angry：生气的
-tired：疲倦的
-boy：男孩
-girl：女孩
-I：我
-am：是
-cold：冷的
-OK：对；好；行
-find：找到
-pencil：铅笔
-too：也；太
-well：好；就这样；好啦
-now：现在
-brother：哥哥；弟
-me：我
-family：家庭
-my：我的
-name：名字
-is：是
-this：这；这个
-and：和
-she：她
-he：他
-who：谁
-big：大的</textarea>
+happy:开心的
+sad:伤心的
+angry:生气的
+...">happy:开心的
+sad:伤心的
+angry:生气的
+tired:疲惫的
+boy:男孩
+girl:女孩
+I:我
+am:是
+cold:冷的
+OK:对；好；行
+find:找到
+pencil:铅笔
+too:也；太
+well:好；就这样；好吧
+now:现在
+brother:兄弟；弟
+me:我
+family:家庭
+my:我的
+name:名字
+is:是
+this:这；这个
+and:和
+she:她
+he:他
+who:谁
+big:大的</textarea>
                     <div class="word-count">已解析单词数: <span id="parsedCount">0</span></div>
                     <div class="custom-words-buttons">
                         <button id="parseBulkBtn">解析单词</button>
@@ -603,10 +603,10 @@ big：大的</textarea>
         <div class="instructions">
             <h3>游戏规则：</h3>
             <ul>
-                <li>点击<span style="color:#c32f2f; font-weight:bold">橙色方块</span>（中文），再点击<span style="color:#2c5aa0; font-weight:bold">蓝色方块</span>（英文单词）进行匹配</li>
+                <li>点击<span style="color:#c32f2f; font-weight:bold">粉色方块</span>（中文），再点击<span style="color:#2c5aa0; font-weight:bold">蓝色方块</span>（英文单词）进行匹配</li>
                 <li>每次点击中文方块时，系统会自动朗读中文</li>
                 <li>每次点击英文单词时，系统会自动朗读英文</li>
-                <li>游戏将根据您输入的单词数量动态生成方块</li>
+                <li>游戏将根据存储输入的单词数量动态生成方块</li>
                 <li>匹配成功得10分，使用提示扣5分</li>
                 <li>时间用完游戏结束</li>
                 <li>行数和列数会根据单词数量自动调整，您也可以手动设置</li>
@@ -691,6 +691,41 @@ big：大的</textarea>
             }, 2000);
         }
 
+        // 从本地存储加载单词
+        function loadWordsFromCache() {
+            try {
+                const cachedWords = localStorage.getItem('wordPairs');
+                if (cachedWords) {
+                    const pairs = JSON.parse(cachedWords);
+                    return pairs;
+                }
+            } catch (error) {
+                console.error('加载缓存失败:', error);
+            }
+            return [];
+        }
+
+        // 保存单词到本地存储
+        function saveWordsToCache(words) {
+            try {
+                localStorage.setItem('wordPairs', JSON.stringify(words));
+                showMessage('单词已保存到本地缓存', 'success');
+            } catch (error) {
+                console.error('保存缓存失败:', error);
+                showMessage('保存缓存失败', 'error');
+            }
+        }
+
+        // 清除本地缓存
+        function clearWordsCache() {
+            try {
+                localStorage.removeItem('wordPairs');
+                showMessage('本地缓存已清除', 'info');
+            } catch (error) {
+                console.error('清除缓存失败:', error);
+            }
+        }
+
         // 使用语音合成API朗读文本
         function speakText(text, lang = 'zh-CN') {
             if (!gameState.speechSupported) {
@@ -766,6 +801,11 @@ big：大的</textarea>
                 }
             }
             
+            // 保存到本地缓存
+            if (pairs.length > 0) {
+                saveWordsToCache(pairs);
+            }
+            
             return pairs;
         }
 
@@ -804,7 +844,7 @@ big：大的</textarea>
             const tileCount = pairCount * 2; // 每对单词有2个方块
             tileCountElement.textContent = tileCount;
             
-            // 根据方块数量自动调整列数
+            // 根据方块数量自动调整，您也可以手动设置
             if (pairCount > 0) {
                 // 计算合适的列数：根据方块数量动态调整
                 let suggestedColumns;
@@ -884,7 +924,7 @@ big：大的</textarea>
             roundIndicator.textContent = `第${gameState.currentRound}轮`;
             timerElement.style.color = '#2575fc';
             
-            // 启用提示按钮，禁用开始游戏按钮
+            // 启用提示按钮，要用开始游戏按钮
             hintBtn.disabled = false;
             startGameBtn.disabled = true;
             
@@ -976,7 +1016,7 @@ big：大的</textarea>
                     matchTiles(gameState.selectedTile, tileElement);
                     playCorrectSound();
                     
-                    // 每次匹配成功只加10分，不移除奖励分
+                    // 每次匹配成功只加10分，不扣除奖励分
                     gameState.score += 10;
                     gameState.matchedPairs++;
                     
@@ -1025,13 +1065,13 @@ big：大的</textarea>
         // 播放正确音效
         function playCorrectSound() {
             correctSound.currentTime = 0;
-            correctSound.play().catch(e => console.log("音频播放失败:", e));
+            correctSound.play().catch(e => console.log("音频播放错误:", e));
         }
 
         // 播放错误音效
         function playWrongSound() {
             wrongSound.currentTime = 0;
-            wrongSound.play().catch(e => console.log("音频播放失败:", e));
+            wrongSound.play().catch(e => console.log("音频播放错误:", e));
         }
 
         // 开始计时器
@@ -1056,7 +1096,7 @@ big：大的</textarea>
         function completeRound() {
             clearInterval(gameState.timerInterval);
             
-            // 移除时间奖励分，只保留匹配得分
+            // 清除时间奖励分，只保留匹配得分
             showMessage(`第${gameState.currentRound}轮完成！`, 'success');
             
             setTimeout(() => {
@@ -1065,13 +1105,13 @@ big：大的</textarea>
                     gameState.gameActive = false;
                     
                     updateGameInfo();
-                    showMessage(`准备第${gameState.currentRound}轮...`, 'success');
+                    showMessage(`准备第${gameState.currentRound}轮..`, 'success');
                     
                     setTimeout(() => {
                         startGame();
                     }, 1500);
                 } else {
-                    endGame(`恭喜！你完成了所有${gameState.totalRounds}轮游戏！最终得分: ${gameState.score}`);
+                    endGame(`恭喜，你完成了所有${gameState.totalRounds}轮游戏！最终得分 ${gameState.score}`);
                 }
             }, 1500);
         }
@@ -1161,6 +1201,14 @@ big：大的</textarea>
             updateGameInfo();
             updateGameConfig();
             
+            // 尝试从缓存加载单词
+            const cachedPairs = loadWordsFromCache();
+            if (cachedPairs.length > 0) {
+                // 如果有缓存，使用缓存的单词
+                bulkInput.value = cachedPairs.map(pair => `${pair.english}:${pair.chinese}`).join('\n');
+                showMessage('已从本地缓存加载单词', 'info');
+            }
+            
             const initialPairs = parseBulkInput();
             gameState.customWordPairs = initialPairs;
             updatePairListDisplay(gameState.customWordPairs);
@@ -1185,7 +1233,13 @@ big：大的</textarea>
                 }
             });
             
-            clearInputBtn.addEventListener('click', clearInput);
+            clearInputBtn.addEventListener('click', () => {
+                clearInput();
+                // 询问是否清除缓存
+                if (confirm('是否同时清除本地缓存？')) {
+                    clearWordsCache();
+                }
+            });
             
             // 配置输入事件监听
             columnsInput.addEventListener('change', updateGameConfig);
